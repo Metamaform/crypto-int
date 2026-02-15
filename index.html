@@ -3,59 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meta-Int Terminal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="liquid-bg"></div>
-    
+    <div class="noise-overlay"></div>
+
     <div id="loader" class="loader-overlay">
-        <div class="glass-blob"></div>
-        <div class="loader-text">Analyzing Liquidity...</div>
+        <div class="blob-container">
+            <div class="blob"></div>
+            <div class="blob"></div>
+        </div>
+        <div class="loader-text">SYNCING ECOSYSTEM...</div>
     </div>
 
-    <div class="app-container">
-        <nav class="glass-tabs">
-            <button class="t-btn active" onclick="showPage('trade')">Trade Calc</button>
-            <button class="t-btn" onclick="showPage('live')">Live Market</button>
+    <div class="app">
+        <nav class="nav-glass">
+            <div class="nav-item active" id="tab-trade" onclick="switchPage('trade')">Profit Calc</div>
+            <div class="nav-item" id="tab-live" onclick="switchPage('live')">Live Market</div>
+            <div class="active-indicator"></div>
         </nav>
 
-        <section id="trade-page" class="page active">
-            <div class="glass-card trade-box">
-                <div class="input-group">
-                    <label>Amount to Sell</label>
-                    <input type="number" id="amount" placeholder="0.00" oninput="calculateTrade()">
-                </div>
-                <div class="input-group">
-                    <label>Fee (%)</label>
-                    <input type="number" id="fee" value="0.1" oninput="calculateTrade()">
-                </div>
-                <hr class="glass-hr">
-                <div class="result-display">
-                    <span class="res-label">You Receive (Net):</span>
-                    <span id="total-receive" class="res-value">0.00</span>
-                </div>
-            </div>
-            
-            <div class="numpad">
-                <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-                <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-                <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
-                <button onclick="press('.')">.</button><button onclick="press('0')">0</button><button class="clear" onclick="press('C')">C</button>
-            </div>
-        </section>
+        <main class="content">
+            <section id="page-trade" class="page active">
+                <div class="glass-card calculator-main">
+                    <div class="input-section">
+                        <div class="field">
+                            <label>Amount to Swap</label>
+                            <input type="number" id="trade-amount" placeholder="0.00" readonly>
+                        </div>
+                        <div class="field fee-field">
+                            <label>Slippage & Fee (%)</label>
+                            <input type="number" id="trade-fee" value="0.3">
+                        </div>
+                    </div>
 
-        <section id="live-page" class="page">
-            <div class="glass-card">
-                <select id="eco-select" class="liquid-select" onchange="loadEcoData()">
-                    <option value="">Select Ecosystem</option>
-                    <option value="ton">TON Ecosystem</option>
-                    <option value="solana">Solana Realm</option>
-                    <option value="eth">Ethereum Mainnet</option>
-                </select>
-            </div>
-            <div id="market-list" class="market-grid"></div>
-        </section>
+                    <div class="divider"></div>
+
+                    <div class="result-section">
+                        <span class="result-label">Net Receive</span>
+                        <div class="result-value" id="net-result">0.00</div>
+                    </div>
+                </div>
+
+                <div class="numpad-glass">
+                    <button onclick="numPress('7')">7</button>
+                    <button onclick="numPress('8')">8</button>
+                    <button onclick="numPress('9')">9</button>
+                    <button onclick="numPress('4')">4</button>
+                    <button onclick="numPress('5')">5</button>
+                    <button onclick="numPress('6')">6</button>
+                    <button onclick="numPress('1')">1</button>
+                    <button onclick="numPress('2')">2</button>
+                    <button onclick="numPress('3')">3</button>
+                    <button onclick="numPress('.')">.</button>
+                    <button onclick="numPress('0')">0</button>
+                    <button class="btn-clear" onclick="numPress('C')">C</button>
+                </div>
+            </section>
+
+            <section id="page-live" class="page">
+                <div class="glass-card select-container">
+                    <select id="eco-select" onchange="fetchMarketData()">
+                        <option value="">Choose Ecosystem</option>
+                        <option value="ton">TON Ecosystem</option>
+                        <option value="solana">Solana Realm</option>
+                        <option value="eth">Ethereum Mainnet</option>
+                    </select>
+                </div>
+
+                <div id="market-results" class="market-list">
+                    </div>
+            </section>
+        </main>
     </div>
 
     <script src="script.js"></script>
