@@ -1,137 +1,64 @@
 :root {
-    --bg-dark: #09090b;
-    --glass-surface: rgba(255, 255, 255, 0.08);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --primary: #3b82f6;
-    --accent: #8b5cf6;
-    --text-main: #ffffff;
-    --text-muted: #a1a1aa;
-    --danger: #ef4444;
-    --success: #22c55e;
-    --easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --glass: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.12);
+    --accent: #00d2ff;
 }
-
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-    margin: 0;
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    overflow: hidden;
-    height: 100vh;
+    margin: 0; background: #04080f; color: white;
+    font-family: 'Segoe UI', sans-serif; overflow: hidden;
 }
 
-/* Background Effects */
-.background-noise {
-    position: fixed; inset: 0;
-    background: 
-        radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.15), transparent 50%);
-    z-index: -1;
+/* Эффект живых пятен на фоне */
+.liquid-bg {
+    position: fixed; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at 20% 30%, #1a3a5a 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #2a1a5a 0%, transparent 40%);
+    z-index: -1; filter: blur(80px);
 }
 
-.app-wrapper {
-    display: flex; flex-direction: column; height: 100%;
-    max-width: 480px; margin: 0 auto; padding: 16px;
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(25px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 24px; padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
 }
 
-/* Navigation */
-.glass-nav {
-    display: flex; position: relative;
-    background: var(--glass-surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-radius: 16px; padding: 4px;
-    margin-bottom: 20px; border: 1px solid var(--glass-border);
+.input-group label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; }
+.input-group input {
+    background: transparent; border: none; color: white;
+    font-size: 24px; width: 100%; outline: none;
 }
 
-.nav-item {
-    flex: 1; border: none; background: none;
-    color: var(--text-muted); padding: 12px;
-    font-weight: 500; font-size: 14px; z-index: 2;
-    transition: color 0.3s; cursor: pointer;
+.res-value { font-size: 32px; font-weight: bold; color: var(--accent); display: block; }
+
+/* Кнопки клавиатуры */
+.numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.numpad button {
+    background: var(--glass); border: 1px solid var(--border);
+    color: white; padding: 20px; border-radius: 15px; font-size: 18px;
+    backdrop-filter: blur(10px);
 }
 
-.nav-item.active { color: #fff; }
-
-.nav-indicator {
-    position: absolute; height: calc(100% - 8px); width: calc(50% - 4px);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px; top: 4px; left: 4px;
-    transition: transform 0.3s var(--easing); z-index: 1;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* Стили лоудера */
+.loader-overlay {
+    position: fixed; inset: 0; background: #000000ed;
+    display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
+}
+.glass-blob {
+    width: 80px; height: 80px; background: var(--accent);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    filter: blur(20px); animation: liquid 3s infinite alternate;
 }
 
-/* Page Transitions */
-.content-area {
-    flex: 1; position: relative; overflow: hidden;
+@keyframes liquid {
+    to { border-radius: 60% 40% 30% 70% / 50% 30% 70% 40%; transform: scale(1.2); }
 }
 
-.page {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    transition: transform 0.4s var(--easing), opacity 0.4s var(--easing);
-    opacity: 0; pointer-events: none;
+.liquid-select {
+    width: 100%; background: var(--glass); border: 1px solid var(--border);
+    color: white; padding: 15px; border-radius: 12px; outline: none;
+    backdrop-filter: blur(10px); appearance: none;
 }
-
-.active-page { opacity: 1; transform: translateX(0); pointer-events: auto; }
-.prev-page { transform: translateX(-20px) scale(0.95); opacity: 0; }
-.next-page { transform: translateX(20px) scale(0.95); opacity: 0; }
-
-/* Calculator UI */
-.display-container {
-    text-align: right; margin-bottom: 20px;
-    min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end;
-}
-.history { font-size: 14px; color: var(--text-muted); margin-bottom: 5px; height: 20px; }
-.current-input { font-size: 48px; font-weight: 300; letter-spacing: -1px; }
-
-.keypad-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-}
-
-.btn {
-    aspect-ratio: 1; border: none; border-radius: 14px;
-    font-size: 20px; cursor: pointer;
-    background: rgba(255,255,255,0.03); color: #fff;
-    transition: all 0.15s;
-    border: 1px solid transparent;
-}
-.btn:active { transform: scale(0.92); background: rgba(255,255,255,0.1); }
-.op { color: var(--primary); background: rgba(59, 130, 246, 0.1); }
-.func { color: var(--danger); }
-.equals { background: var(--primary); grid-row: span 2; aspect-ratio: auto; }
-.zero { grid-column: span 2; aspect-ratio: auto; }
-
-/* Crypto UI */
-.crypto-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.pulse-dot {
-    width: 8px; height: 8px; background: var(--success);
-    border-radius: 50%; box-shadow: 0 0 10px var(--success);
-    animation: pulse 2s infinite;
-}
-
-.search-glass select {
-    width: 100%; padding: 14px; border-radius: 12px;
-    background: var(--glass-surface); border: 1px solid var(--glass-border);
-    color: white; font-size: 16px; margin-bottom: 20px; outline: none;
-}
-
-.crypto-list { display: flex; flex-direction: column; gap: 12px; }
-
-.rate-card {
-    background: rgba(20, 20, 25, 0.6); padding: 16px;
-    border-radius: 16px; border: 1px solid var(--glass-border);
-    display: flex; justify-content: space-between; align-items: center;
-    animation: slideUp 0.4s var(--easing);
-}
-.rate-card.best { border: 1px solid var(--success); background: rgba(34, 197, 94, 0.05); }
-
-/* Skeleton Loading */
-.skeleton {
-    height: 60px; width: 100%; background: rgba(255,255,255,0.05);
-    border-radius: 16px; animation: shimmer 1.5s infinite linear;
-}
-
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes shimmer { 0% { opacity: 0.3; } 50% { opacity: 0.6; } 100% { opacity: 0.3; } }
